@@ -1,0 +1,14 @@
+YoY Growth % = 
+VAR CurrentSales = [Total Sales] 
+VAR PriorYearSales = CALCULATE( [Total Sales], SAMEPERIODLASTYEAR('DimDate'[Date]) ) 
+RETURN DIVIDE( CurrentSales - PriorYearSales, PriorYearSales, 
+BLANK() )
+
+------------------------------------------------------------
+
+SELECT sale_year, 
+total_sales, 
+LAG(total_sales, 1) OVER (ORDER BY sale_year) AS prior_year_sales, 
+(total_sales - LAG(total_sales, 1) OVER (ORDER BY sale_year)) 
+/ LAG(total_sales, 1) OVER (ORDER BY sale_year) AS yoy_growth_pct 
+FROM annual_sales;
