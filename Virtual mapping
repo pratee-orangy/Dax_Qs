@@ -1,0 +1,28 @@
+### **DAX Grain Protection &amp; Virtual Mapping**
+
+#### **Option A: Grain Protection with** **ISINSCOPE()**
+
+Prevents displaying misleading category targets when a user drills down to an individual SKU:
+
+```
+Safe Target Amount = 
+IF(
+    ISINSCOPE(DimProduct[ProductID]),
+    BLANK(), -- Protects grain at Product level
+    SUM(FactTargets[TargetAmount])
+)
+
+```
+
+#### **Option B: Virtual Relationship with** **TREATAS()**
+
+If physical relationships are not established, map the filter context virtually in DAX:
+
+```
+Virtual Target Amount = 
+CALCULATE(
+    SUM(FactTargets[TargetAmount]),
+    TREATAS(VALUES(DimDate[MonthYear]), FactTargets[MonthYear]),
+    TREATAS(VALUES(DimCategory[Category]), FactTargets[Category])
+)
+```
